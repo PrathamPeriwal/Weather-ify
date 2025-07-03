@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather-ify</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style type="text/tailwindcss">
+      * {
+        font-family: "Merriweather Sans", sans-serif;
+      }
+
+      @layer utilities {
+        .animate-fade-in {
+          @apply opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards];
+        }
+        @keyframes fadeIn {
+          to {
+            opacity: 1;
+          }
+        }
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen w-full overflow-auto text-[#f9f7f7] bg-gradient-to-br from-[#112d4e] to-[#3f72af] px-4 sm:px-6 md:px-12">
+    <div class="wrapper">
+      <h1 class="text-center uppercase tracking-wider my-8 text-2xl font-semibold">Weather App</h1>
+
+      <!-- Tabs -->
+      <div class="w-full max-w-[550px] mx-auto mt-8 flex justify-between">
+        <p class="tab text-sm tracking-widest px-3 py-1 capitalize cursor-pointer bg-white/50 rounded transition-all duration-200 hover:bg-white/70 currentTab" data-userWeather>
+          Your Weather
+        </p>
+        <p class="tab text-sm tracking-widest px-3 py-1 capitalize cursor-pointer transition-all duration-200 hover:bg-white/30" data-searchWeather>
+          Search Weather
+        </p>
+      </div>
+
+      <!-- Content Wrapper -->
+      <div class="my-12">
+        <!-- Search Form -->
+        <form class="formContainer hidden w-full max-w-[550px] mx-auto mb-8 flex items-center justify-center gap-2 transition-all duration-300" data-searchForm>
+          <input
+            type="text"
+            placeholder="Search for city..."
+            class="w-full h-10 px-5 bg-white/50 rounded-lg focus:outline-[3px] focus:outline-white/70 placeholder:text-white/70"
+            data-searchInput
+          />
+          <button class="btn w-10 h-10 flex items-center justify-center rounded-full bg-[#3f72af] cursor-pointer transition-all duration-300 hover:bg-[#315e8d]" type="submit">
+            <img src="./Images/search.png" width="20" height="20" loading="lazy" />
+          </button>
+        </form>
+
+        <!-- Grant Location Access -->
+        <div class="grantLocationContainer subContainer hidden animate-fade-in flex-col items-center w-full max-w-[1000px] mx-auto text-center">
+          <img src="./Images/location.png" width="80" height="80" loading="lazy" class="mb-6 mx-auto" />
+          <p class="font-semibold text-2xl">Grant Location Access</p>
+          <p class="text-xs mt-3 mb-7 font-light tracking-wide">Allow access to get weather information</p>
+          <button class="btn text-sm uppercase px-6 py-2 rounded bg-[#3f72af] transition-all duration-300 hover:bg-[#315e8d]" data-grantAccess>Grant Access</button>
+        </div>
+
+        <!-- Loading -->
+        <div class="loadingContainer subContainer hidden animate-fade-in flex-col items-center w-full max-w-[1000px] mx-auto text-center">
+          <img src="./Images/loading.gif" width="150" height="150" class="mx-auto" />
+          <p class="uppercase mt-2">Loading</p>
+        </div>
+
+        <!-- Weather Info -->
+        <div class="userInfoContainer subContainer hidden animate-fade-in flex-col items-center w-full max-w-[1000px] mx-auto text-center">
+          <div class="name flex justify-center items-center gap-2 mb-2">
+            <p data-cityName class="text-xl font-light"></p>
+            <img data-countryFlag class="w-[30px] h-[30px] object-contain" />
+          </div>
+
+          <p data-weatherDesc class="capitalize text-lg mb-2"></p>
+          <img data-weatherIcon class="mx-auto w-[70px] h-[70px]" />
+          <p data-temp class="text-3xl font-bold mt-2"></p>
+
+          <div class="parameterContainer w-full flex justify-center flex-wrap gap-4 mt-6">
+            <!-- Wind Speed -->
+            <div class="parameter flex flex-col items-center justify-between bg-white/50 p-4 rounded w-full sm:w-[45%] md:w-[30%] max-w-[200px] gap-1 transition-all duration-300 hover:scale-105">
+              <img src="./Images/wind.png" alt="#" class="w-[50px] h-[50px] object-cover" />
+              <p class="uppercase font-semibold text-base">windspeed</p>
+              <p class="parameterValue text-sm font-light" data-windspeed></p>
+            </div>
+
+            <!-- Humidity -->
+            <div class="parameter flex flex-col items-center justify-between bg-white/50 p-4 rounded w-full sm:w-[45%] md:w-[30%] max-w-[200px] gap-1 transition-all duration-300 hover:scale-105">
+              <img src="./Images/humidity.png" alt="#" class="w-[50px] h-[50px] object-cover" />
+              <p class="uppercase font-semibold text-base">humidity</p>
+              <p class="parameterValue text-sm font-light" data-humidity></p>
+            </div>
+
+            <!-- Clouds -->
+            <div class="parameter flex flex-col items-center justify-between bg-white/50 p-4 rounded w-full sm:w-[45%] md:w-[30%] max-w-[200px] gap-1 transition-all duration-300 hover:scale-105">
+              <img src="./Images/cloud.png" alt="#" class="w-[50px] h-[50px] object-cover" />
+              <p class="uppercase font-semibold text-base">clouds</p>
+              <p class="parameterValue text-sm font-light" data-clouds></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Error -->
+        <div class="errorContainer subContainer hidden animate-fade-in flex-col items-center w-full max-w-[1000px] mx-auto text-center gap-4">
+          <img src="./Images/not-found.png" class="w-full max-w-[300px] aspect-square object-cover" data-errorImg />
+          <p data-errorText class="text-base"></p>
+          <button class="btn text-sm uppercase px-6 py-2 rounded bg-[#3f72af] transition-all duration-300 hover:bg-[#315e8d]" data-errorButton>
+            Retry Now
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
